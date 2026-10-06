@@ -1,0 +1,4 @@
+@props(['url','scope','message'=>null,'refresh'=>false])
+<section class="mb-5 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm" data-order-alerts data-url="{{ $url }}" data-scope="{{ $scope }}" data-refresh="{{ $refresh ? 'kitchen-board' : '' }}" data-waiting="{{ __('Đang theo dõi cập nhật đơn mỗi 15 giây.') }}" data-failed="{{ __('Mất kết nối cập nhật. Đang thử lại…') }}" data-on="{{ __('Tắt âm báo') }}" data-off="{{ __('Bật âm báo đơn hàng') }}">
+<p role="status" aria-live="polite" data-alert-message>{{ $message ?? __('Đang theo dõi cập nhật đơn mỗi 15 giây.') }}</p><div class="mt-3 flex flex-wrap gap-3"><button type="button" class="btn-secondary" data-alert-sound aria-pressed="false">{{ __('Bật âm báo đơn hàng') }}</button><a class="btn-secondary" href="{{ url()->current() }}">{{ __('Tải lại trạng thái') }}</a></div></section>
+<script src="{{ asset('js/order-alerts.js') }}" defer></script>

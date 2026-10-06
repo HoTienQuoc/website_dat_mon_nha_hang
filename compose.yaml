@@ -1,0 +1,81 @@
+services:
+  laravel.test:
+    build:
+      context: ./docker/php
+      args:
+        WWWUSER: '${WWWUSER:-1000}'
+        WWWGROUP: '${WWWGROUP:-1000}'
+    image: restaurant-sail-php85
+    ports:
+      - '127.0.0.1:${APP_PORT:-8000}:8000'
+    environment:
+      LARAVEL_SAIL: 1
+      PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS:-8}
+    volumes:
+      - '.:/var/www/html'
+      - './docker/php/restaurant.ini:/usr/local/etc/php/conf.d/restaurant.ini:ro'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [sail]
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+    ports:
+      - '127.0.0.1:${FORWARD_DB_PORT:-3307}:3306'
+    volumes:
+      - 'sail-mysql:/var/lib/mysql'
+      - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh:ro'
+    healthcheck:
+      test: ['CMD-SHELL', 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u"$$MYSQL_USER" -D"$$MYSQL_DATABASE" -e "SELECT 1"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks: [sail]
+  scheduler:
+    image: restaurant-sail-php85
+    command: ['php', 'artisan', 'schedule:work']
+    restart: unless-stopped
+    volumes:
+      - '.:/var/www/html'
+      - './docker/php/restaurant.ini:/usr/local/etc/php/conf.d/restaurant.ini:ro'
+    depends_on:
+      mysql:
+        condition: service_healthy
+      laravel.test:
+        condition: service_started
+    networks: [sail]
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    profiles: [stripe]
+    environment:
+      STRIPE_API_KEY: '${STRIPE_SECRET_KEY:-}'
+    command: ['listen', '--forward-to', 'http://laravel.test:8000/stripe/webhook', '--events', 'checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.expired,refund.created,refund.updated,refund.failed,charge.refunded']
+    depends_on: [laravel.test]
+    networks: [sail]
+  mailpit:
+    image: axllent/mailpit:v1.29
+    ports:
+      - '127.0.0.1:${MAILPIT_PORT:-8025}:8025'
+    networks: [sail]
+  adminer:
+    image: adminer:5
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    ports:
+      - '127.0.0.1:${ADMINER_PORT:-8080}:8080'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [sail]
+networks:
+  sail:
+    driver: bridge
+volumes:
+  sail-mysql:
+    driver: local

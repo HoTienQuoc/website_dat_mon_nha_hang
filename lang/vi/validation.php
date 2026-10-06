@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'accepted' => 'Vui lòng xác nhận :attribute.',
+    'array' => ':attribute phải là danh sách hợp lệ.',
+    'date' => ':attribute phải là ngày hợp lệ.',
+    'numeric' => ':attribute phải là một số.',
+    'file' => ':attribute phải là tệp hợp lệ.',
+    'uploaded' => 'Không tải lên được :attribute.',
+    'image' => ':attribute phải là ảnh.',
+    'mimes' => ':attribute phải thuộc định dạng :values.',
+    'current_password' => 'Mật khẩu hiện tại không đúng.',
+    'required_without' => 'Cần nhập :attribute khi chưa có :values.',
+    'regex' => 'Định dạng :attribute không hợp lệ.',
+    'password' => ['letters' => 'Mật khẩu cần có chữ cái.', 'numbers' => 'Mật khẩu cần có chữ số.'],
+    'required' => 'Trường :attribute là bắt buộc.', 'string' => 'Trường :attribute phải là chuỗi ký tự.',
+    'email' => 'Email không hợp lệ.', 'integer' => 'Trường :attribute phải là số nguyên.', 'boolean' => 'Giá trị :attribute không hợp lệ.',
+    'min' => ['array' => ':attribute cần ít nhất :min mục', 'numeric' => ':attribute phải từ :min trở lên.', 'string' => ':attribute cần ít nhất :min ký tự.', 'file' => ':attribute cần ít nhất :min KB.'],
+    'max' => ['array' => ':attribute không được quá :max mục.', 'numeric' => ':attribute không được vượt quá :max.', 'string' => ':attribute không được quá :max ký tự.', 'file' => ':attribute không được quá :max KB.'],
+    'exists' => 'Giá trị :attribute không tồn tại hoặc không còn khả dụng.', 'unique' => ':attribute đã được sử dụng.',
+    'in' => 'Giá trị :attribute không hợp lệ.', 'uuid' => 'Mã :attribute không đúng định dạng.',
+    'confirmed' => 'Xác nhận :attribute chưa trùng khớp.', 'date_format' => ':attribute cần đúng định dạng :format.',
+    'after_or_equal' => ':attribute phải bằng hoặc sau :date.',
+    'attributes' => ['cardholder' => 'tên trên thẻ', 'card_number' => 'số thẻ thử nghiệm', 'expiry' => 'hạn dùng thẻ', 'cvc' => 'CVC', 'billing_address' => 'địa chỉ thanh toán mẫu', 'country' => 'quốc gia', 'postal_code' => 'mã bưu chính', 'delivery_ward' => 'phường giao hàng', 'delivery_zone_id' => 'vùng giao', 'fulfillment_type' => 'hình thức nhận món', 'payment_method' => 'phương thức thanh toán', 'restaurant_table_id' => 'bàn ăn', 'quantities' => 'danh sách món', 'quantities.*' => 'số lượng món', 'expected_quantity' => 'số lượng trước khi sửa', 'reason' => 'lý do', 'confirm' => 'thao tác', 'confirmed' => 'địa chỉ', 'approve_prepared' => 'duyệt món đã chế biến', 'counted_cash' => 'tiền mặt thực đếm', 'note' => 'ghi chú', 'address' => 'địa chỉ', 'email' => 'email', 'is_active' => 'trạng thái tài khoản', 'assigned_to' => 'nhân viên', 'name_en' => 'tên tiếng Anh', 'description_en' => 'mô tả tiếng Anh', 'category_id' => 'nhóm món', 'opens_at' => 'giờ mở cửa', 'closes_at' => 'giờ đóng cửa', 'phone' => 'số điện thoại', 'customer_email' => 'email liên hệ', 'current_password' => 'mật khẩu hiện tại', 'default_address' => 'địa chỉ mặc định', 'contact' => 'email hoặc số điện thoại', 'name' => 'tên', 'customer_name' => 'họ tên', 'customer_phone' => 'số điện thoại', 'quantity' => 'số lượng', 'price' => 'giá', 'password' => 'mật khẩu', 'role' => 'vai trò', 'status' => 'trạng thái', 'from' => 'ngày bắt đầu', 'to' => 'ngày kết thúc', 'code' => 'đơn', 'image' => 'ảnh', 'fee' => 'phí giao'],
+];

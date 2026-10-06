@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@source "../views/**/*.blade.php";
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@theme { --font-sans: ui-sans-serif, system-ui, sans-serif; }
+@layer components {
+ .btn { @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-orange-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 disabled:cursor-not-allowed disabled:opacity-40; }
+ .btn-secondary { @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium hover:bg-stone-100; }
+ .btn-danger { @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-red-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-800; }
+ .input { @apply block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-base focus:border-orange-700 focus:outline-2 focus:outline-orange-200; }
+ .label { @apply mb-2 block text-sm font-medium; }
+ .panel { @apply rounded-2xl border border-stone-200 bg-white p-5 sm:p-6; }
+ .badge { @apply inline-block rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700; }
+ .page-title { @apply text-3xl font-bold tracking-tight; }
+ .muted { @apply text-sm leading-6 text-stone-500; }
+ .money { @apply whitespace-nowrap font-semibold text-orange-800; }
+}

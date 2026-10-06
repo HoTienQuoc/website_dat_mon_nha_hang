@@ -1,0 +1,21 @@
+@if($order->merged_into_id)<a class="text-orange-800 underline" href="{{ route('staff.orders.show',$order->merged_into_id) }}">{{ __('Đã gộp vào đơn') }} #{{ $order->merged_into_id }}</a>@endif
+@if($order->split_from_id)<p class="muted">{{ __('Tách từ đơn') }} #{{ $order->split_from_id }}</p>@endif
+@if($order->payment_method==='cash' && $order->payment_status==='unpaid' && in_array($order->status,['pending','confirmed','preparing','ready','served']) && (auth()->user()->coordinatesOrders() || (auth()->user()->role==='waiter' && $order->assignedTo(auth()->user(),'service'))))
+<details class="border-t border-stone-200 pt-4"><summary class="cursor-pointer font-semibold">{{ __('Sửa / hủy món') }}</summary><p class="muted mt-3">{{ __('Nhập số lượng 0 để hủy món. Món đã làm cần quản lý duyệt và ghi lý do.') }}</p>
+@foreach($order->items->where('quantity','>',0) as $item)
+@if($item->preparation_status==='pending' || in_array(auth()->user()->role,['admin','manager']))
+<form class="mt-4 space-y-3 rounded-xl bg-stone-50 p-4" method="post" action="{{ route('staff.items.adjust',$item) }}">@csrf @method('PATCH')<p class="font-semibold">{{ $item->display_name }} · {{ __(\App\Models\OrderItem::PREPARATION[$item->preparation_status]) }}</p><input type="hidden" name="expected_quantity" value="{{ $item->quantity }}"><input type="hidden" name="expected_status" value="{{ $item->preparation_status }}"><label class="label">{{ __('Số lượng mới') }}<input class="input" type="number" name="quantity" min="0" max="{{ $item->preparation_status==='pending' ? 20 : $item->quantity }}" value="{{ $item->quantity }}" required></label><label class="label">{{ __('Lý do điều chỉnh') }}<input class="input" name="reason" required minlength="5" maxlength="500"></label>
+@if($item->preparation_status!=='pending')<label class="flex gap-3 text-sm"><input type="checkbox" name="approve_prepared" value="1" required>{{ __('Tôi duyệt điều chỉnh món đã chế biến.') }}</label>@endif
+<button class="btn-secondary">{{ __('Lưu điều chỉnh món') }}</button></form>
+@endif
+@endforeach</details>
+@if($order->fulfillment_type==='dine_in' && auth()->user()->coordinatesOrders())
+<details class="border-t border-stone-200 pt-4"><summary class="cursor-pointer font-semibold">{{ __('Gộp / tách hóa đơn tại bàn') }}</summary><p class="muted mt-3">{{ __('Chỉ áp dụng đơn tiền mặt chưa thanh toán. Giá món và lịch sử xử lý được giữ lại.') }}</p>
+@foreach($mergeTargets as $target)
+<form class="mt-4 space-y-3 rounded-xl bg-stone-50 p-4" method="post" action="{{ route('staff.orders.merge',$order) }}">@csrf<input type="hidden" name="target_order_id" value="{{ $target->id }}"><input type="hidden" name="expected_total" value="{{ $order->total }}"><input type="hidden" name="target_total" value="{{ $target->total }}"><p>{{ __('Gộp toàn bộ món vào đơn') }} #{{ $target->id }} · {{ $target->table_name }} · {{ number_format($target->total) }} ₫</p><label class="label">{{ __('Lý do điều chỉnh') }}<input class="input" name="reason" minlength="5" maxlength="500" required></label><button class="btn-secondary">{{ __('Xác nhận gộp đơn') }}</button></form>
+@endforeach
+<form class="mt-5 space-y-4 rounded-xl border border-stone-200 p-4" method="post" action="{{ route('staff.orders.split',$order) }}">@csrf<input type="hidden" name="expected_total" value="{{ $order->total }}"><h3 class="font-bold">{{ __('Tách một phần món sang bàn khác') }}</h3><label class="label">{{ __('Bàn nhận món') }}<select class="input" name="restaurant_table_id" required><option value="">{{ __('Chọn bàn trống') }}</option>@foreach($tables as $table)@if($table->id!==$order->restaurant_table_id && $table->active_orders_count===0)<option value="{{ $table->id }}">{{ $table->name }}</option>@endif @endforeach</select></label>
+@foreach($order->items->where('quantity','>',0) as $item)<label class="label">{{ $item->display_name }} ({{ $item->quantity }})<input class="input" type="number" name="quantities[{{ $item->id }}]" min="0" max="{{ $item->quantity }}" value="0" required></label>@endforeach
+<label class="label">{{ __('Lý do điều chỉnh') }}<input class="input" name="reason" minlength="5" maxlength="500" required></label><button class="btn-secondary">{{ __('Xác nhận tách đơn') }}</button></form></details>
+@endif
+@endif
